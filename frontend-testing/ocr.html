@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Handwritten Text</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .upload-box {
+            border: 2px dashed #3498db;
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-box:hover {
+            background-color: #f0f8ff;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 20px auto;
+            display: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.3);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Handwritten Text OCR</h1>
+        
+        <div class="upload-box" id="uploadBox">
+            <p>Klik untuk upload gambar atau drop file di sini</p>
+            <p><small>(Format: PNG, JPG, maksimal 5MB)</small></p>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </div>
+        
+        <img id="imagePreview" alt="Preview Gambar">
+        
+        <button id="processBtn" disabled>Proses OCR</button>
+        
+        <div id="result" style="display: none;">
+            <h3>Hasil OCR:</h3>
+            <p id="ocrResult"></p>
+        </div>
+    </div>
+
+    <script>
+        // Elemen DOM
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const processBtn = document.getElementById('processBtn');
+        const resultDiv = document.getElementById('result');
+        const ocrResult = document.getElementById('ocrResult');
+        
+        // Variabel untuk menyimpan file
+        let selectedFile = null;
+        
+        // Event listeners
+        uploadBox.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                
+                // Validasi file
+                if (!selectedFile.type.match('image.*')) {
+                    alert('Silakan upload file gambar (PNG/JPG)');
+                    return;
+                }
+                
+                if (selectedFile.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 5MB');
+                    return;
+                }
+                
+                // Tampilkan preview
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                    processBtn.disabled = false;
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        });
+        
+        // Drag and drop
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.backgroundColor = '#f0f8ff';
+        });
+        
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.backgroundColor = '';
+        });
+        
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+        
+        // Proses OCR
+        processBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+            
+            // Tampilkan loading
+            processBtn.innerHTML = '<div class="loading"></div> Memproses...';
+            processBtn.disabled = true;
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                
+                // Ganti URL dengan endpoint Flask Anda
+                const response = await fetch('http://localhost:5000/ocr', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Tampilkan hasil
+                ocrResult.textContent = data.text || 'Tidak ada teks yang terdeteksi';
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gagal memproses gambar. Silakan coba lagi.');
+            } finally {
+                processBtn.innerHTML = 'Proses OCR';
+                processBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
