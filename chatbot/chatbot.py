@@ -7,8 +7,8 @@ import os
 # Konfigurasi Azure OpenAI
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_KEY"),  # Simpan di .env
-    api_version=os.getenv("AZURE_API_VERSION"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+    api_version=os.getenv("AZURE_API_VERSION"), # Simpan di .env
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT") # Simpan di .env
 )
 
 # Model yang digunakan

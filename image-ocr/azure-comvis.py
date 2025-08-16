@@ -16,23 +16,9 @@ headers = {
     "Content-Type": "application/octet-stream"  # Penting untuk format binary
 }
 params = {
-    "language": "en",  # Bahasa Indonesia
+    "language": "en",  # Bahasa Inggris
     "detectOrientation": "true"  # Auto-detect orientasi teks
 }
-
-# try:
-    
-# except Exception as e:
-#     print(f"Error: {e}")
-#     print(f"Respons API (raw): {response.text}")  # Debug: Lihat respons mentah
-
-# response = requests.post(endpoint, headers=headers, params=params, data=image_bytes)
-# response.raise_for_status() 
-# print (response)
-# print("Hasil OCR:")
-# for region in result.get("regions", []):
-#     for line in region.get("lines", []):
-#         print(" ".join([word.get("text", "") for word in line.get("words", [])]))
 
 
 try:
