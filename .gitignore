@@ -4,3 +4,5 @@ trocr_cache
 deploy.sh
 deploy_with_docker.ps1
 app-prod.py
+__pycache__/
+.pytest_cache/
