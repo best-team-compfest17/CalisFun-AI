@@ -1,3 +1,5 @@
+# Import Libraries
+
 from flask import Flask, request, jsonify
 from PIL import Image
 import cv2, numpy as np, os
@@ -6,7 +8,11 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 from flask_cors import CORS
 
+# Get the environment variable
+
 load_dotenv()
+
+# Create Flask App
 
 def create_app():
     app = Flask(__name__)
@@ -19,6 +25,8 @@ def create_app():
     
     register_routes(app)
     return app
+
+# Load or Create Microsoft TrOCR Model
 
 def load_model():
     MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", "/app/image-ocr/trocr_cache")
@@ -34,12 +42,16 @@ def load_model():
         model = VisionEncoderDecoderModel.from_pretrained(MODEL_ID, cache_dir=MODEL_CACHE_DIR)
         return processor, model
 
+# Init Setup Azure
+
 def init_azure_client():
     return AzureOpenAI(
         api_key=os.getenv("AZURE_OPENAI_KEY"),
         api_version=os.getenv("AZURE_API_VERSION"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
     )
+
+# Register the Flask Routes
 
 def register_routes(app):
     @app.route('/healthz', methods=['GET'])
@@ -87,12 +99,16 @@ def register_routes(app):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+# Preprocessing the image ocr
+
 def preprocess_image(image_bytes):
     image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     enhanced = clahe.apply(gray)
     return cv2.cvtColor(enhanced, cv2.COLOR_GRAY2RGB)
+
+# Create the flask app and expose the port on 5000
 
 app = create_app()
 

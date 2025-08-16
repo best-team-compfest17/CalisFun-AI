@@ -85,7 +85,7 @@ class FlaskAPITestCase(unittest.TestCase):
 
         # Verify pipeline executed correctly
         self.mock_processor.assert_called_once()
-        self.mock_model.generate.assert_called_once()  # don’t force exact arg check
+        self.mock_model.generate.assert_called_once()
         self.mock_processor.batch_decode.assert_called_once_with(["mocked_ids"], skip_special_tokens=True)
 
     def test_ocr_no_file(self):

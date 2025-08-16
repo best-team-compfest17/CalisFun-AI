@@ -1,6 +1,6 @@
 import requests
 
-api_key = "helloworld"  # API key gratis -> login di web api ocr space ini
+api_key = "helloworld"  # Use your free api key by sign in on the api.ocr.space
 url = "https://api.ocr.space/parse/image"
 with open("handwritten/halo.png", "rb") as image_file:
     response = requests.post(
