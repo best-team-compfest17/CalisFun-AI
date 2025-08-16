@@ -1,5 +1,5 @@
 venv/
 trocr_cache
-.env*
+.env
 deploy.sh
 deploy_with_docker.ps1

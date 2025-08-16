@@ -1,36 +1,46 @@
-FROM python:3.10-slim
-
-# Sistem dep. untuk OpenCV, dll.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential git ffmpeg libsm6 libxext6 && \
-    rm -rf /var/lib/apt/lists/*
+# -------- Stage 1: Builder --------
+FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-# Install deps dulu (layer cache)
+# Install build dependencies (untuk compile wheels dsb)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Siapkan cache model (dibundel ke image agar startup cepat)
-ARG TROCR_MODEL_ID=microsoft/trocr-base-printed
-ENV TROCR_MODEL_ID=${TROCR_MODEL_ID}
-ENV MODEL_CACHE_DIR=/app/image-ocr/trocr_cache
-RUN mkdir -p ${MODEL_CACHE_DIR} && python - <<'PY'
-from transformers import TrOCRProcessor, VisionEncoderDecoderModel
-import os
-model_id = os.getenv("TROCR_MODEL_ID", "microsoft/trocr-base-printed")
-cache_dir = os.getenv("MODEL_CACHE_DIR", "/app/image-ocr/trocr_cache")
-TrOCRProcessor.from_pretrained(model_id, cache_dir=cache_dir)
-VisionEncoderDecoderModel.from_pretrained(model_id, cache_dir=cache_dir)
-print("Downloaded", model_id, "to", cache_dir)
-PY
+# Install dependencies ke folder lokal (biar clean di runtime)
+RUN pip install --no-cache-dir --upgrade pip \
+ && pip install --no-cache-dir -r requirements.txt --target /app/deps
 
-# Copy source
+
+# -------- Stage 2: Runtime --------
+FROM python:3.11-slim AS runtime
+
+WORKDIR /app
+
+# Install runtime dependencies (supaya OpenCV bisa jalan)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copy dependencies dari builder
+COPY --from=builder /app/deps /usr/local/lib/python3.11/site-packages
+
+# Copy source code
 COPY . .
 
-# Expose & start via gunicorn
-ENV PORT=5000
+# Pre-download TrOCR model saat build (cache di folder lokal)
+RUN python -c "from transformers import TrOCRProcessor, VisionEncoderDecoderModel; \
+    TrOCRProcessor.from_pretrained('microsoft/trocr-base-printed', cache_dir='/app/image-ocr/trocr_cache'); \
+    VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-base-printed', cache_dir='/app/image-ocr/trocr_cache')"
+
+# Expose port (sesuai Flask/Gunicorn app)
 EXPOSE 5000
-# Worker gthread: cocok utk CPU-bound ringan + I/O
-CMD exec gunicorn -w ${GUNICORN_WORKERS:-2} -k gthread --threads ${GUNICORN_THREADS:-8} \
-  -t ${GUNICORN_TIMEOUT:-120} -b 0.0.0.0:${PORT} app:app
+
+# Gunicorn untuk production (pakai app-prod.py)
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app-prod:app"]
