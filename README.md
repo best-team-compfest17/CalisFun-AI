@@ -1,24 +1,48 @@
 <div align="center">
     <div>
-        <img height="150px" src="./Images/org-logo.jpg" alt="Gama Logo"/>
+        <img height="150px" src="./Images/logo.png" alt="CalisFun Logo"/>
     </div>
     <div>
             <h3><b>CalisFun - AI Repository</b></h3>
-            <p><i>Gamify, Share, and Learn Together!</i></p>
+            <p><i>Cerdas Sejak Dini, Seru Sepanjang Hari</i></p>
     </div>      
 </div>
 <br>
 <h1 align="center">CalisFun - SEA Academy Compfest 17</h1>
 <div align="center">
 
-<img src="./Images/logo.png" alt="CalisFun Preview"/>
+<img src="./Images/banner.png" alt="CalisFun Preview"/>
 
 </div>
 <br>
 
-CalisFun...
+CalisFun is an interactive educational app designed to help children learn to read, write, and count in a fun, gamified, and accessible way.
 
-<a href="">Main Repository</a>
+The app offers three main features:
+
+<ul>
+<li>✍️ Learn Handwriting – practice writing letters, numbers, and words interactively on a smartphone screen.</li>
+<li>🔤 Learn Spelling – spelling games with audio-visual aids.</li>
+<li>🔢 Learn Counting – recognize numbers and basic math operations through mini-games.</li>
+</ul>
+
+Supported by AI OCR (to automatically recognize children's handwriting) and AI Chatbot (as a friendly virtual tutor), CalisFun aims to reduce illiteracy and make basic learning more fun, adaptive, and inclusive, especially for children in areas with limited access to education.
+
+Further documentation is available at: <a href="">Main Repository</a>
+
+<!-- CalisFun adalah aplikasi edukasi interaktif yang dirancang untuk membantu anak-anak belajar membaca, menulis, dan berhitung dengan cara yang seru, gamified, dan mudah diakses.
+
+Aplikasi ini menghadirkan tiga fitur utama:
+
+<ul>
+<li>✍️ Learn Handwriting – latihan menulis huruf, angka, dan kata secara interaktif di layar smartphone.</li>
+<li>🔤 Learn Spelling – permainan mengeja kata dengan bantuan audio-visual.</li>
+<li>🔢 Learn Counting – pengenalan angka dan operasi matematika dasar melalui mini games.</li>
+</ul>
+
+Didukung dengan AI OCR (untuk mengenali tulisan anak secara otomatis) dan AI Chatbot (sebagai tutor virtual yang ramah), CalisFun bertujuan untuk mengurangi angka buta aksara serta menjadikan proses belajar dasar lebih menyenangkan, adaptif, dan inklusif, terutama bagi anak-anak di wilayah dengan keterbatasan akses pendidikan.
+
+Dokumentasi Lebih Lanjut berada di: <a href="">Main Repository</a> -->
 
 ---
 
@@ -27,8 +51,6 @@ CalisFun...
 - [🧩 Core Features](#-core-features)
 - [🧰 Getting Started Locally](#-getting-started-locally)
 - [🔐 .env Configuration](#-env-configuration)
-- [📸 Website Preview](#-website-preview)
-- [🧭 Diagram](#-diagram)
 - [👥 Owner](#-owner)
 - [📬 Contact](#-contact)
 
@@ -54,25 +76,15 @@ CalisFun...
 
 ## 🧩 Core Features
 
-### 📚 Cultural Content Library
-- Explore rich content on traditional dances, folktales, artifacts, and culinary heritage
-- Multimedia-based content (image, audio, video, narration, ancient script)
+### 🖼️ Image OCR (Microsoft TrOCR)
+- Input: file gambar (PNG/JPG) atau base64.
+- Output: teks hasil OCR + confidence (opsional) + detil waktu proses.
+- Model default: `microsoft/trocr-base-printed`
+- Penggunaan: deteksi huruf/kata dari lembar latihan tulis anak atau kartu kosakata.
 
-### 🧠 Community-Driven Translation
-- Users can collaboratively translate cultural assets into local and global languages
-- Support for rare scripts: Javanese, Balinese, Dutch Colonial, etc.
-
-### 🕹️ Gamified Learning System
-- Learn through missions, quizzes, and streaks
-- Earn badges and rank up on cultural knowledge leaderboards
-
-### 🎤 Content Submission Portal
-- Anyone can contribute: audio folklore, dialect samples, old manuscripts, or historical photos
-- Curated by moderators and experts to ensure quality
-
-### 🌐 Community & Challenges
-- Weekly cultural challenges (e.g., “Upload a forgotten legend from your village”)
-- Community post board for storytelling, reflection, and cultural sharing
+### 💬 Chatbot (Azure OpenAI Model)
+- Input: pertanyaan dari pengguna (bisa tentang apapun)
+- Output: respon dari AI Chatbot yang menggunakan model OpenAI-35
 
 ---
 
@@ -85,71 +97,43 @@ CalisFun...
 
 ### Clone the Project
 ```bash
-git clone https://github.com/lLAlAlex/Gama.git
-cd Gama
-cd Frontend
-npm install
-npm run dev
+
+# Cloning Repo
+git clone https://github.com/best-team-compfest17/CalisFun-AI.git
+cd CalisFun-AI
+
+# Make Virtual Environment
+python -m venv .venv
+source .venv/bin/activate # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Run the flask api python (in the root folder)
+python app.py
+
+# To run the test coverage (in the root folder)
+python -m unittest test.py -v
 ```
 
 ---
 
 ## 🔐 .env Configuration
 
-.env for the Backend
+.env for the AI
 ```
-MONGO_URI=
-JWT_SECRET=
-PORT=
+AZURE_OPENAI_KEY=...
+AZURE_OPENAI_ENDPOINT=https://<your-azure-openai>.openai.azure.com/
+AZURE_API_VERSION=2024-06-01 # Example
+AZURE_OPENAI_DEPLOYMENT=gpt-35-turbo
+
+PORT=5000
+CORS_ALLOW_ORIGINS=*
+MAX_UPLOAD_MB=10
+
+TROCR_MODEL_ID=microsoft/trocr-base-printed
+MODEL_CACHE_DIR=/app/image-ocr/trocr_cache
 ```
 
----
-
-## 📸 &nbsp;Website Preview
-<table style="width:100%; text-align:center">
-    <col width="100%">
-    <tr>
-        <td width="1%" align="center"><img height="370" src="./Images/Preview/Landing.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Home Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/Crafts.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Crafts Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/Inventory.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Inventory Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/Play.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Play Page</td>
-    </tr>
-    <tr>
-        <td width="1%" align="center"><img height="400" src="./Images/Preview/Journey.png"/></td>
-    </tr>
-    <tr>
-        <td width="1%" align="center">Journey Recap Page</td>
-    </tr>
-</table>
-
----
-
-## 🧭 Diagram
-
-*Overall Database System Flow:*
-<p align="center">
-  <img src="./Images/Gama-GH6-Diagram.png" width="700">
-</p>
-
-This diagram shows how the models connected using ERD Diagram
+You can also copy the .env.sample then rename it to .env and update your .env file
 
 ---
 
@@ -157,10 +141,10 @@ This diagram shows how the models connected using ERD Diagram
 
 This Repository is created by Team 1
 <ul>
+<li>Stanley Nathanael Wijaya - Fullstack Developer</li>
 <li>Haikal Iman F - Mobile Developer</li>
 <li>Muhammad Favian Jiwani - Mobile Developer</li>
 <li>Raditya Ramadhan - Backend Developer</li>
-<li>Stanley Nathanael Wijaya - Fullstack Developer</li>
 </ul>
 As Final Project for SEA Compfest 17 Academy
 
