@@ -1,56 +1,20 @@
-<div align="center">
-    <div>
-        <img height="150px" src="./Images/logo.png" alt="CalisFun Logo"/>
-    </div>
-    <div>
-            <h3><b>CalisFun - AI Repository</b></h3>
-            <p><i>Cerdas Sejak Dini, Seru Sepanjang Hari</i></p>
-    </div>      
-</div>
-<br>
-<h1 align="center">CalisFun - SEA Academy Compfest 17</h1>
-<div align="center">
+# CalisFun AI Repository Documentation
 
-<img src="./Images/banner.png" alt="CalisFun Preview"/>
-
-</div>
-<br>
-
-CalisFun is an interactive educational app designed to help children learn to read, write, and count in a fun, gamified, and accessible way.
-
-The app offers three main features:
-
-<ul>
-<li>✍️ Learn Handwriting – practice writing letters, numbers, and words interactively on a smartphone screen.</li>
-<li>🔤 Learn Spelling – spelling games with audio-visual aids.</li>
-<li>🔢 Learn Counting – recognize numbers and basic math operations through mini-games.</li>
-</ul>
-
-Supported by AI OCR (to automatically recognize children's handwriting) and AI Chatbot (as a friendly virtual tutor), CalisFun aims to reduce illiteracy and make basic learning more fun, adaptive, and inclusive, especially for children in areas with limited access to education.
-
-Further documentation is available at: <a href="">Main Repository</a>
-
-<!-- CalisFun adalah aplikasi edukasi interaktif yang dirancang untuk membantu anak-anak belajar membaca, menulis, dan berhitung dengan cara yang seru, gamified, dan mudah diakses.
-
-Aplikasi ini menghadirkan tiga fitur utama:
-
-<ul>
-<li>✍️ Learn Handwriting – latihan menulis huruf, angka, dan kata secara interaktif di layar smartphone.</li>
-<li>🔤 Learn Spelling – permainan mengeja kata dengan bantuan audio-visual.</li>
-<li>🔢 Learn Counting – pengenalan angka dan operasi matematika dasar melalui mini games.</li>
-</ul>
-
-Didukung dengan AI OCR (untuk mengenali tulisan anak secara otomatis) dan AI Chatbot (sebagai tutor virtual yang ramah), CalisFun bertujuan untuk mengurangi angka buta aksara serta menjadikan proses belajar dasar lebih menyenangkan, adaptif, dan inklusif, terutama bagi anak-anak di wilayah dengan keterbatasan akses pendidikan.
-
-Dokumentasi Lebih Lanjut berada di: <a href="">Main Repository</a> -->
+> [!TIP]
+> 
+> To make it clear, this repository is just for [Local Development] only. The deployed AI Feature is made in Backend Repository. So this repository is for development testing due to expensive server to deploy the AI Model.
 
 ---
 
 ## 📃 Table of Contents
 - [⚙️ Technology Stack](#-technology-stack)
 - [🧩 Core Features](#-core-features)
-- [🧰 Getting Started Locally](#-getting-started-locally)
+- [🏗️ Clean Architecture](#-clean-architecture)
+- [🧪 Test Coverage](#-test-coverage)
 - [🔐 .env Configuration](#-env-configuration)
+- [🧰 Getting Started Locally](#-getting-started-locally)
+- [🧭 Flowchart Diagram](#-flowchart-diagram)
+- [📝 Important Notes](#-important-notes)
 - [👥 Owner](#-owner)
 - [📬 Contact](#-contact)
 
@@ -88,6 +52,92 @@ Dokumentasi Lebih Lanjut berada di: <a href="">Main Repository</a> -->
 
 ---
 
+## 🏗️ Clean Architecture
+
+### Repository Structure
+
+<code>calis-fun-ai/
+├── app.py                      # Main Flask app (thin entry point)
+├── requirements.txt            # Core dependencies
+│
+├── src/                        # All AI logic
+│   ├── ocr/                    # OCR domain
+│   │   ├── service.py          # TrOCR wrapper class
+│   │   ├── schemas.py          # Pydantic models (input/output)
+│   │   └── preprocessing.py    # Image utils
+│   │
+│   ├── chatbot/                # Chatbot domain
+│   │   ├── service.py          # Azure OpenAI wrapper
+│   │   └── prompts/            # System prompt templates
+│   │
+│   └── core/                   # Shared utilities
+│       ├── config.py           # Centralized configs
+│       └── exceptions.py       # Custom errors
+│
+├── tests/                      # Tests (mirror src structure)
+│   ├── ocr/
+│   │   ├── test_service.py     # Unit tests
+│   │   └── conftest.py         # Fixtures
+│   │
+│   ├── chatbot/
+│   │   └── test_service.py
+│   │
+│   └── integration/            # API/integration tests
+│       └── test_api.py
+│
+├── frontend_testing/           # Local frontend experiments
+│   └── index.html              # (Optional)
+│
+├── docker/
+│   ├── Dockerfile              # Optimized for production
+│   └── Dockerfile.dev          # For local testing
+│
+└── .dockerignore
+</code>
+
+### **Architecture Principles**
+
+The architecture that we used for the AI Repository is Pragmatic Layered Architecture that balances simplicity with testability.
+
+1. **Layered Separation**
+    - `app.py`: Thin routing layer (only HTTP handling)
+    - `src/`: Business logic and AI services (for development)
+    - `test.py`: Isolated test suites
+2. **Domain-Centric**
+    - OCR and chatbot as separate domains
+
+---
+
+## 🧪 Test Coverage
+
+We already succedd to locally run the image ocr using Microsoft Pre-tuned Model and Chatbot using Azure OpenAI Chatbot Model. We also already tested it using mockup library in Python
+
+
+<img src="./Images/test_coverage.png" height="210"/>
+
+---
+
+## 🔐 .env Configuration
+
+.env for the AI
+```
+AZURE_OPENAI_KEY=...
+AZURE_OPENAI_ENDPOINT=https://<your-azure-openai>.openai.azure.com/
+AZURE_API_VERSION=2024-06-01 # Example
+AZURE_OPENAI_DEPLOYMENT=gpt-35-turbo
+
+PORT=5000
+CORS_ALLOW_ORIGINS=*
+MAX_UPLOAD_MB=10
+
+TROCR_MODEL_ID=microsoft/trocr-base-printed
+MODEL_CACHE_DIR=/app/image-ocr/trocr_cache
+```
+
+You can also copy the .env.sample then rename it to .env and update your .env file
+
+---
+
 ## 🧰 Getting Started Locally
 
 ### Prerequisites
@@ -116,24 +166,20 @@ python -m unittest test.py -v
 
 ---
 
-## 🔐 .env Configuration
+## 🧭 Flowchart Diagram
 
-.env for the AI
-```
-AZURE_OPENAI_KEY=...
-AZURE_OPENAI_ENDPOINT=https://<your-azure-openai>.openai.azure.com/
-AZURE_API_VERSION=2024-06-01 # Example
-AZURE_OPENAI_DEPLOYMENT=gpt-35-turbo
+*Overall System Flow for the AI Model:*
+<p align="center">
+  <img src="./Images/ai-diagram.png" width="700">
+</p>
 
-PORT=5000
-CORS_ALLOW_ORIGINS=*
-MAX_UPLOAD_MB=10
+This diagram shows AI Model Interaction
 
-TROCR_MODEL_ID=microsoft/trocr-base-printed
-MODEL_CACHE_DIR=/app/image-ocr/trocr_cache
-```
+---
 
-You can also copy the .env.sample then rename it to .env and update your .env file
+## 📝 Important Notes
+
+Because this repository is just for local development and testing, so there is no CI/CD Implementation. However from docker folder you can build the docker image successfully.
 
 ---
 
@@ -145,8 +191,9 @@ This Repository is created by Team 1
 <li>Haikal Iman F - Mobile Developer</li>
 <li>Muhammad Favian Jiwani - Mobile Developer</li>
 <li>Raditya Ramadhan - Backend Developer</li>
+<li>Muhammad Ridho Ananda - Mentor</li>
 </ul>
-As Final Project for SEA Compfest 17 Academy
+As Final Project for SEA Academy Compfest 17
 
 ---
 
@@ -156,4 +203,4 @@ Have questions or want to collaborate?
 - 📧 Email: stanley.n.wijaya7@gmail.com
 - 💬 Discord: `stynw7`
 
-<code>Made with ❤️ by The Best Team?</code>
+<code>Made with ❤️ by The Calon Best Team</code>
