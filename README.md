@@ -56,48 +56,27 @@
 
 ### Repository Structure
 
-<code>calis-fun-ai/
+```
+calis-fun-ai/
 ├── app.py                      # Main Flask app (thin entry point)
+├── test.py                     # For running the test coverage
 ├── requirements.txt            # Core dependencies
 │
 ├── src/                        # All AI logic
-│   ├── ocr/                    # OCR domain
-│   │   ├── service.py          # TrOCR wrapper class
-│   │   ├── schemas.py          # Pydantic models (input/output)
-│   │   └── preprocessing.py    # Image utils
-│   │
+│   ├── image-ocr/              # OCR domain
 │   ├── chatbot/                # Chatbot domain
-│   │   ├── service.py          # Azure OpenAI wrapper
-│   │   └── prompts/            # System prompt templates
-│   │
-│   └── core/                   # Shared utilities
-│       ├── config.py           # Centralized configs
-│       └── exceptions.py       # Custom errors
 │
-├── tests/                      # Tests (mirror src structure)
-│   ├── ocr/
-│   │   ├── test_service.py     # Unit tests
-│   │   └── conftest.py         # Fixtures
-│   │
-│   ├── chatbot/
-│   │   └── test_service.py
-│   │
-│   └── integration/            # API/integration tests
-│       └── test_api.py
-│
-├── frontend_testing/           # Local frontend experiments
-│   └── index.html              # (Optional)
+├── frontend-testing/           # Local frontend experiments
 │
 ├── docker/
 │   ├── Dockerfile              # Optimized for production
-│   └── Dockerfile.dev          # For local testing
+│   └── .dockerignore           # For local testing
 │
-└── .dockerignore
-</code>
+```
 
 ### **Architecture Principles**
 
-The architecture that we used for the AI Repository is Pragmatic Layered Architecture that balances simplicity with testability.
+The architecture that we used for the AI Repository is **Pragmatic Layered Architecture** that balances simplicity with testability.
 
 1. **Layered Separation**
     - `app.py`: Thin routing layer (only HTTP handling)
@@ -170,7 +149,7 @@ python -m unittest test.py -v
 
 *Overall System Flow for the AI Model:*
 <p align="center">
-  <img src="./Images/ai-diagram.png" width="700">
+  <img src="./Images/ai-diagram.png" width="300">
 </p>
 
 This diagram shows AI Model Interaction
