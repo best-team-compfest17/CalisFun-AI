@@ -9,7 +9,7 @@
 ## 📃 Table of Contents
 - [⚙️ Technology Stack](#-technology-stack)
 - [🧩 Core Features](#-core-features)
-- [🏗️ Clean Architecture](#-clean-architecture)
+- [🏗️ Architecture Pattern](#-architecture-pattern)
 - [🧪 Test Coverage](#-test-coverage)
 - [🔐 .env Configuration](#-env-configuration)
 - [🧰 Getting Started Locally](#-getting-started-locally)
@@ -52,7 +52,7 @@
 
 ---
 
-## 🏗️ Clean Architecture
+## 🏗️ Architecture Pattern
 
 ### Repository Structure
 
