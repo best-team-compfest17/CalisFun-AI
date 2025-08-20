@@ -41,14 +41,14 @@
 ## 🧩 Core Features
 
 ### 🖼️ Image OCR (Microsoft TrOCR)
-- Input: file gambar (PNG/JPG) atau base64.
-- Output: teks hasil OCR + confidence (opsional) + detil waktu proses.
-- Model default: `microsoft/trocr-base-printed`
-- Penggunaan: deteksi huruf/kata dari lembar latihan tulis anak atau kartu kosakata.
+- Input: image file (PNG/JPG) or base64.
+- Output: OCR text + confidence (optional) + processing time details.
+- Default model: `microsoft/trocr-base-printed`
+- Usage: letter/word detection from children's writing practice sheets or vocabulary cards.
 
 ### 💬 Chatbot (Azure OpenAI Model)
-- Input: pertanyaan dari pengguna (bisa tentang apapun)
-- Output: respon dari AI Chatbot yang menggunakan model OpenAI-35
+- Input: user questions (can be about anything)
+- Output: responses from an AI chatbot using the OpenAI-35 model
 
 ---
 
