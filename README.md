@@ -29,11 +29,12 @@
 <kbd><img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" height="60" /></kbd>
 <kbd><img src="./Images/tech/azure.png" height="60" /></kbd>
 <kbd><img src="./Images/tech/openai.png" height="60" /></kbd>
+<kbd><img src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/docker.png" height="60" /></kbd>
 
 </div>
 
 <div align="center">
-<h4>Python | Flask | Hugging Face | Microsoft Azure | OpenAI</h4>
+<h4>Python | Flask | Hugging Face | Microsoft Azure | OpenAI | Docker</h4>
 </div>
 
 ---
